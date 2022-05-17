@@ -3,9 +3,15 @@ package com.example.states;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fluentd.logger.FluentLogger;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import com.example.MetricsConfig;
 
+import org.fluentd.logger.FluentLogger;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.bots.AbsSender;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import application.boilerplate.MessageSender;
 import application.context.ApplicationContext;
 import application.context.annotation.Component;
 import application.context.annotation.Message;
@@ -26,5 +32,14 @@ public class InitialState {
         data.put("UserName", username);
         data.put("Message", message);
         LOG.log("UserData", data);
+        MetricsConfig.ReceivedMessagesCounter.increment();
+
+        if (message.equals("Hello")) {
+            MessageSender sender = new MessageSender();
+            sender.setChatId(userId);
+            sender.setText("Hello, " + username + "!");
+            sender.sendMessage();
+            MetricsConfig.SentMessagesCounter.increment();
+        }
     }
 }

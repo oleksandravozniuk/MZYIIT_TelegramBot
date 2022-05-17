@@ -6,6 +6,7 @@ public class App
 {
     public static void main( String[] args )
     {
+        MetricsConfig.configureMetrics();
         Application.start();
     }
 }
